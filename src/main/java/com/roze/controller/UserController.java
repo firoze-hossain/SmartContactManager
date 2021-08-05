@@ -9,6 +9,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -177,7 +178,8 @@ public class UserController {
 	
 	//delete contact handler
 	@GetMapping("/delete/{cId}")
-	public String deleteContact(@PathVariable("cId") Long cId,Model model,HttpSession session) {
+	@Transactional
+	public String deleteContact(@PathVariable("cId") Long cId,Model model,HttpSession session,Principal principal) {
 		
 		System.out.println("CID"+cId);
 		
@@ -188,9 +190,10 @@ public class UserController {
 		System.out.println("Contact "+contact.getcId());
 		
 		
-		contact.setUser(null);
+		User user=this.userRepository.getUserByUserName(principal.getName());
 		
-		this.contactRepository.delete(contact);
+		user.getContacts().remove(contact);
+		this.userRepository.save(user);
 		
 		System.out.println("Deleted");
 		session.setAttribute("message", new Message("Contact deleted Successfully", "success"));
