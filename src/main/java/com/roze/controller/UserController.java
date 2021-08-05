@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -196,4 +197,16 @@ public class UserController {
 		
 		return "redirect:/user/show-contacts/0";
 	}
+	
+	//open update form handler
+	@PostMapping("/update-contact/{cId}")
+	public String updateForm(@PathVariable("cId")Long cId, Model m) {
+		
+		m.addAttribute("title","Update Contact");
+		Contact contact = this.contactRepository.findById(cId).get();
+		m.addAttribute("contact",contact);
+		
+		return "normal/update_form";
+	}
+	
 }
