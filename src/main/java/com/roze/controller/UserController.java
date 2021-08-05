@@ -209,4 +209,50 @@ public class UserController {
 		return "normal/update_form";
 	}
 	
+	//update contact handler
+	@RequestMapping(value = "/process-update",method = RequestMethod.POST)
+	public String updateHandler(@ModelAttribute Contact contact,@RequestParam("profileImage") MultipartFile file,Model m,HttpSession session,Principal principal) {
+		
+		try {
+			Contact oldContactDetail = this.contactRepository.findById(contact.getcId()).get();
+			
+			//check image
+			if(!file.isEmpty()) {
+				//file work
+				//rewrite
+				File deleteFile = new ClassPathResource("static/img").getFile();
+				File file1=new File(deleteFile,oldContactDetail.getImage());
+				file1.delete();
+				
+				
+				//update new photo
+				
+				File saveFile = new ClassPathResource("static/img").getFile();
+				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + file.getOriginalFilename());
+
+				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				contact.setImage(file.getOriginalFilename());
+				
+			}
+			else {
+				
+				contact.setImage(oldContactDetail.getImage());
+			}
+			
+			User user=this.userRepository.getUserByUserName(principal.getName());
+			contact.setUser(user);
+			this.contactRepository.save(contact);
+			session.setAttribute("message", new Message("Your contact is updated", "success"));
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Contact Name: "+contact.getName());
+		System.out.println("Contact Id: "+contact.getcId());
+		
+		return "redirect:/user/"+contact.getcId()+"/contact";
+	}
+	
 }
