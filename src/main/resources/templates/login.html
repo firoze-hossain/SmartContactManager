@@ -15,6 +15,7 @@
                     <div id="login-box" class="col-md-12">
                         <form id="login-form" class="form" th:action="@{/dologin}" method="post">
                             <h3 class="text-center text-info">Login</h3>
+                            
                             <div th:if="${param.error}" class="alert alert-danger">
                             Invalid Username and Password
                             
@@ -22,6 +23,11 @@
                             
                             <div th:if="${param.logout}" class="alert alert-success">
                             You have been logged out
+                            
+                            </div>
+                            
+                             <div th:if="${param.change}" class="alert alert-success">
+                           <p th:text="${param.change}"></p>
                             
                             </div>
                             
@@ -42,6 +48,9 @@
                             
                             <div id="register-link" class="text-right">
                                 <a href="/signup/" class="text-info">Register here</a>
+                            </div>
+                            <div class="container text-center">
+                            <a th:href="@{/forgot}">Forgot Password</a>
                             </div>
                             
                         </form>
